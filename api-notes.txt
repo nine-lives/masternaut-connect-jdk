@@ -1,0 +1,63 @@
+Access:
+ List Drivers
+ List Driver Details
+ Live Position Latest
+ Find Nearest Vehicle
+ Driver Fuel Consumption
+
+General
+  Error body not consistent, i.e. an endpoint that is not enabled returns:
+        {
+          "status" : "401",
+          "message" : "Bad Credentials"
+        }
+
+        rather than:
+
+        {
+          "errorCode" : "401",
+          "errorMsg" : "Bad Credentials"
+        }
+
+  Consider returning 403 and 404 rather than 401 for disabled and wrong endpoints uris respectively - would help developers.
+
+Group
+  List Group -  just before the Add Group title there is URL for location/category - is that meant to be group/{groupId}?
+  Add Group -  response example missing quotes on vehicleIds and personIds individual ids in list, i.e. "personIds": ["347626,347627"] should be "personIds": ["347626", "347627"] - doc error?
+  Update Group -  response example missing quotes on vehicleIds and personIds individual ids in list - doc error?
+
+Location
+  List Location - Response example: properties reference through to notes should be inside the preceding object scope
+
+Location Category
+  Add Location Category - should the method be POST rather than PUT?
+
+Vehicle
+    List Vehicle - tags - definition says comma separated list but should say list of strings/tags
+    List Vehicle - assetTypeGroup not defined in docs
+    List Vehicle - featureTags not defined in docs
+    List Vehicle - engineTotalHoursLastModified not defined in docs
+    List Vehicle - odomemterLastModified not defined in docs
+    List Vehicle - Example Request - second vehicle groupName property missing comma after it
+    List Vehicle -  Error response property errorMsg returned as errorMessage, reproduce by sending both groupIds and vehicleIds parameters in request
+    Update Vehicle - tags  - definition says comma separated list, example is a list of strings
+
+Driver
+    List Driver - Example request - driverName property in example but not defined response fields table
+    List Driver - Example request - extra brace on the 3rd line from the bottom
+    List Driver - Example request - groupName property is spelt incorrectly and extra quote on the value on both instances
+    List Driver - Example request - second drive id property is incorrectly formatted - '"  :' characters to be removed
+
+Live Tracking
+    Live Position - postcode property - case issue - postcode in docs and example but postCode in server response
+    Live Position - groupIds request parameter - unclear if this is asset or driver group id or either
+    Live Position - Example Response - postcode property has an extra quote
+    Live Position - Example Response - stringValue and engineTotalHoursType properties use non-standard quote character
+    Latest Live Position - postcode property - case issue - postcode in docs and example but postCode in server response
+    Latest Live Position - groupIds request parameter - unclear if this is asset or driver group id or either
+    Latest Live Position - Example Response - totalCount property missing comma after property
+    Latest Live Position - Example Response - postcode property has an extra quote
+    Latest Live Position - Example Response - engineTotalHoursType properties use non-standard quote character
+
+Eco Drive
+    Driver Fuel Consumption - driverId parameter definition spelling error - written as driveId

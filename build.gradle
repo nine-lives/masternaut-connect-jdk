@@ -1,0 +1,49 @@
+Properties versionProperties = new Properties();
+versionProperties.load(new File(rootDir, "src/main/resources/version.properties").newInputStream())
+group = 'com.9ls'
+version = versionProperties.getProperty("version")
+
+
+project.ext {
+    library_baseName = 'masternaut-connect-jdk'
+
+    jacoco_limits = [
+            'instruction': 90,
+            'branch'     : 80,
+            'line'       : 90,
+            'complexity' : 90,
+            'method'     : 95,
+            'class'      : 100
+    ]
+
+    publish_name = 'masternaut-connect-jdk'
+    publish_description = 'Masternaut Connect API Java SDK'
+    publish_url = 'https://github.com/nine-lives/masternaut-connect-jdk'
+    publish_scm = 'scm:git@github.com:nine-lives/masternaut-connect-jdk.git'
+    publish_license = 'https://raw.githubusercontent.com/nine-lives/masternaut-connect-jdk/master/LICENSE'
+    publish_developerId = 'mgsmith57'
+    publish_developerName = 'Marc G. Smith'
+    publish_developerEmail = 'marc@9ls.com'
+    publish_credentialsUserName = project.hasProperty('ossrhUsername') ? ossrhUsername : ''
+    publish_credentialsPassword = project.hasProperty('ossrhPassword')? ossrhPassword : ''
+}
+
+apply from: "https://raw.githubusercontent.com/nine-lives/gradle-scripts/main/v6/library.gradle"
+apply from: "https://raw.githubusercontent.com/nine-lives/gradle-scripts/main/v6/integration-test.gradle"
+
+dependencies {
+    api 'joda-time:joda-time:2.10.10'
+    api 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
+    api 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.12.5'
+
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    implementation 'org.apache.httpcomponents:httpmime:4.5.13'
+}
+
+integrationTest {
+    systemProperties = [
+            masternautUsername: System.getProperty('masternautUsername'),
+            masternautPassword: System.getProperty('masternautPassword'),
+            masternautCustomerId: System.getProperty('masternautCustomerId')
+    ]
+}
