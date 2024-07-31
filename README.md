@@ -25,22 +25,22 @@ The sdk is hosted on maven central, so you can include it as a dependency
 in your projects as follows:
 
 ### Gradle/Grails
-```
-    compile 'com.9ls:masternaut-connect-jdk:1.34.0'
+```groovy
+implementation 'com.9ls:masternaut-connect-jdk:1.34.0'
 ```
 
 ### Apache Maven
-```
-    <dependency>
-        <groupId>com.9ls</groupId>
-        <artifactId>masternaut-connect-jdk</artifactId>
-        <version>1.34.0</version>
-    </dependency>
+```xml
+<dependency>
+    <groupId>com.9ls</groupId>
+    <artifactId>masternaut-connect-jdk</artifactId>
+    <version>1.34.0</version>
+</dependency>
 ```
 
 ### Apache Ivy
-```
-    <dependency org="com.9ls" name="masternaut-connect-jdk" rev="1.34.0" />
+```xml
+<dependency org="com.9ls" name="masternaut-connect-jdk" rev="1.34.0" />
 ```
 
 ## Connect General
