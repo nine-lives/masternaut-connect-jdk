@@ -14,6 +14,7 @@ public class Driver {
     private String groupName;
     private Boolean active;
     private LocalDateTime activeDate;
+    private String timezoneId;
     private String defaultVehicleId;
     private List<DriverKey> keys;
     private List<String> tags;
@@ -50,6 +51,10 @@ public class Driver {
 
     public LocalDateTime getActiveDate() {
         return activeDate;
+    }
+
+    public String getTimezoneId() {
+        return timezoneId;
     }
 
     public String getDefaultVehicleId() {

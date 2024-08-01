@@ -19,6 +19,7 @@ class DriverSpec extends Specification {
                 "name": "Hayton Wood",
                 "active": true,
                 "activeDate": "2013-10-24T04:10:00.613",
+                "timezoneId": "EL1",
                 "groupId": "5045939e60b13e9f54b1e046",
                 "groupName": "Masternaut",
                 "defaultVehicleId": "235204",

@@ -100,6 +100,7 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
     def "I can get next drivers"() {
         given:
         Page<Driver> response = connect.drivers().list(new DriverListRequest()
+                .withPageIndex(0)
                 .withPageSize(5))
         Set<String> firstPageIds = response.items*.id as Set
 
@@ -117,10 +118,10 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can get next Drivers with filter"() {
         given:
-        List<String> driverIds = getDriverList().subList(0, 10)*.id
+        List<String> driverIds = getDriverList().subList(0, 4)*.id
         Page<Driver> response = connect.drivers().list(new DriverListRequest()
                 .withPageIndex(0)
-                .withPageSize(5))
+                .withPageSize(2))
         Set<String> firstPageIds = response.items*.id as Set
 
         when:
@@ -129,7 +130,7 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
         then:
         next.totalCount == response.totalCount
         next.totalPages == response.totalPages
-        next.items.size() == 5
+        next.items.size() == 2
         next.items.each {
             assert !firstPageIds.contains(it.id)
             assert driverIds.contains(it.id)
@@ -138,7 +139,7 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can collect all drivers"() {
         given:
-        int totalCount = connect.drivers().list(new DriverListRequest().withPageSize(1)).totalCount
+        int totalCount = connect.drivers().list(new DriverListRequest().withPageIndex(0).withPageSize(1)).totalCount
 
         when:
         List<Driver> response = connect.drivers().collect()

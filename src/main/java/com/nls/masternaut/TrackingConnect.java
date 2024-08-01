@@ -30,7 +30,7 @@ public class TrackingConnect {
     }
 
     public LatestLivePositionList latest(LivePositionRequest request) {
-        return latest(new LivePositionRequest(), null);
+        return latest(request, null);
     }
 
     public LatestLivePositionList latest(LivePositionRequest request, LocalDateTime fromDateTime) {

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public class ObjectDistance {
     private String id;
     private String name;
+    private String registration;
     private BigDecimal straightLineDistanceKilometers;
 
     public String getId() {
@@ -13,6 +14,10 @@ public class ObjectDistance {
 
     public String getName() {
         return name;
+    }
+
+    public String getRegistration() {
+        return registration;
     }
 
     public BigDecimal getStraightLineDistanceKilometers() {

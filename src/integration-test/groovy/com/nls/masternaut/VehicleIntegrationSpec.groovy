@@ -213,20 +213,23 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can find the nearest vehicles"() {
         given:
-        LivePosition position = connect.tracking().live().find {it.longitude != null }
+        List<LivePosition> positions = connect.tracking().live()
+        LivePosition position = positions.findAll() {it.longitude != null }[1]
+        println(ObjectMapperFactory.make().writeValueAsString(positions))
+        println("########################################")
 
         when:
         List<ObjectDistance> response = connect.vehicles().findNearest(new FindNearestRequest()
-                .withRadius(100)
+                .withRadius(2)
                 .withMaximumResultsToReturn(10)
                 .withLongitude(position.longitude)
                 .withLatitude(position.latitude))
+        println(ObjectMapperFactory.make().writeValueAsString(response))
 
         then:
         response.size() > 0
         response.size() <= 10
         response*.id.contains(position.assetId)
-        println(ObjectMapperFactory.make().writeValueAsString(response))
     }
 
     def "I can get the fuel consumption"() {

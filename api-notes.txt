@@ -1,10 +1,3 @@
-Access:
- List Drivers
- List Driver Details
- Live Position Latest
- Find Nearest Vehicle
- Driver Fuel Consumption
-
 General
   Error body not consistent, i.e. an endpoint that is not enabled returns:
         {
@@ -43,6 +36,7 @@ Vehicle
     Update Vehicle - tags  - definition says comma separated list, example is a list of strings
 
 Driver
+    List Driver - timezoneId not defined in docs
     List Driver - Example request - driverName property in example but not defined response fields table
     List Driver - Example request - extra brace on the 3rd line from the bottom
     List Driver - Example request - groupName property is spelt incorrectly and extra quote on the value on both instances
@@ -58,6 +52,7 @@ Live Tracking
     Latest Live Position - Example Response - totalCount property missing comma after property
     Latest Live Position - Example Response - postcode property has an extra quote
     Latest Live Position - Example Response - engineTotalHoursType properties use non-standard quote character
+    Find Nearest Vehicle - Radius of 1 returns error - The supplied radius value 1.0 is invalid. Radius must be an integer value between 1 and 500.0
 
 Eco Drive
     Driver Fuel Consumption - driverId parameter definition spelling error - written as driveId
