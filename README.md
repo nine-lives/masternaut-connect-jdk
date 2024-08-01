@@ -26,7 +26,7 @@ in your projects as follows:
 
 ### Gradle/Grails
 ```groovy
-implementation 'com.9ls:masternaut-connect-jdk:1.34.0'
+implementation 'com.9ls:masternaut-connect-jdk:1.34.1'
 ```
 
 ### Apache Maven
@@ -34,13 +34,13 @@ implementation 'com.9ls:masternaut-connect-jdk:1.34.0'
 <dependency>
     <groupId>com.9ls</groupId>
     <artifactId>masternaut-connect-jdk</artifactId>
-    <version>1.34.0</version>
+    <version>1.34.1</version>
 </dependency>
 ```
 
 ### Apache Ivy
 ```xml
-<dependency org="com.9ls" name="masternaut-connect-jdk" rev="1.34.0" />
+<dependency org="com.9ls" name="masternaut-connect-jdk" rev="1.34.1" />
 ```
 
 ## Connect General
@@ -493,7 +493,7 @@ MasternautConnect connect = Masternaut.make(new Configuration()
     .withCustomerId("customerId")
     .withEndpoint("https://api.masternautconnect.com/connect-webservices/services/public/v1/customer/")
     .withMaxConnectionsPerRoute(20)
-    .withUserAgent("masternaut-connect-jdk 1.34.0")
+    .withUserAgent("masternaut-connect-jdk 1.34.1")
     .withBlockTillRateLimitReset(false)
     .withRequestsPerSecond(5)
     .withRequestBurstSize(20);

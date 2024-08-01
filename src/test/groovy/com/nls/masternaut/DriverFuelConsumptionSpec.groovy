@@ -53,5 +53,11 @@ class DriverFuelConsumptionSpec extends Specification {
         entity.vehicles[0].totalFuel == 34.0G
         entity.vehicles[0].benchmarkConsumption == 12.427423844746679G;
         entity.vehicles[0].manufacturerConsumption == null
+        entity.electricUsedkWh == 1.2G
+        entity.gasUsedKg == 2.3G
+        entity.fuelUsedLitres == 34.0G
+        entity.fuelUsedPetrolEquivalentLitres == 34.0
+        entity.co2 == 97.828G
+        entity.totalFuel == 34.0G
     }
 }
