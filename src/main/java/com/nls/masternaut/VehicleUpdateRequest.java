@@ -1,9 +1,18 @@
 package com.nls.masternaut;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nls.masternaut.client.IClient;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class VehicleUpdateRequest {
+    @JsonIgnore
+    private final transient IClient client;
+
+    @JsonIgnore
+    private final transient String id;
+
     private String groupId;
     private String name;
     private List<String> tags;
@@ -11,16 +20,19 @@ public class VehicleUpdateRequest {
     private VehicleStatus status;
     private AssetCosts assetCosts;
 
-    public VehicleUpdateRequest() {
+    public VehicleUpdateRequest(IClient client, String vehicleId) {
+        this.client = client;
+        this.id = vehicleId;
     }
 
-    public VehicleUpdateRequest(Vehicle vehicle) {
+    public VehicleUpdateRequest withVehicle(Vehicle vehicle) {
         this.groupId = vehicle.getGroupId();
         this.name = vehicle.getName();
         this.tags = vehicle.getTags() == null ? null : new ArrayList<String>(vehicle.getTags());
         this.type = vehicle.getType();
         this.status = vehicle.getStatus();
         this.assetCosts = vehicle.getAssetCosts() == null ? null : new AssetCosts(vehicle.getAssetCosts());
+        return this;
     }
 
     public String getGroupId() {
@@ -75,5 +87,9 @@ public class VehicleUpdateRequest {
     public VehicleUpdateRequest withAssetCosts(AssetCosts assetCosts) {
         this.assetCosts = assetCosts;
         return this;
+    }
+
+    public Vehicle commit() {
+        return client.put("vehicle/" + id, this, Vehicle.class);
     }
 }

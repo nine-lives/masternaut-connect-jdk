@@ -17,5 +17,10 @@ public enum LivePositionStatus {
     endOfJourney,
     driving,
     idling,
-    pingPosition
+    pingPosition;
+
+
+    public String getLabel() {
+        return Character.toUpperCase(name().charAt(0)) + name().substring(1).replaceAll("([A-Z])", " $1");
+    }
 }

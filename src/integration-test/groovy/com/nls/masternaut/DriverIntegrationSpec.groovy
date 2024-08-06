@@ -9,7 +9,7 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can list drivers"() {
         when:
-        Page<Driver> response = connect.drivers().list()
+        Page<Driver> response = connect.drivers().list().fetch()
 
         then:
         response.totalCount > 0;
@@ -38,9 +38,10 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can page drivers"() {
         when:
-        Page<Driver> response = connect.drivers().list(new DriverListRequest()
+        Page<Driver> response = connect.drivers().list()
             .withPageIndex(0)
-            .withPageSize(3))
+            .withPageSize(3)
+            .fetch()
 
         then:
         response.totalCount > 3;
@@ -48,9 +49,10 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
         response.items.size() == 3;
 
         when:
-        Page<Driver> response1 = connect.drivers().list(new DriverListRequest()
+        Page<Driver> response1 = connect.drivers().list()
                 .withPageIndex(0)
-                .withPageSize(2))
+                .withPageSize(2)
+                .fetch()
 
         then:
         response1.totalCount == response.totalCount;
@@ -60,9 +62,10 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
         response1.items[1].id == response.items[1].id
 
         when:
-        Page<Driver> response2 = connect.drivers().list(new DriverListRequest()
+        Page<Driver> response2 = connect.drivers().list()
                 .withPageIndex(1)
-                .withPageSize(2))
+                .withPageSize(2)
+                .fetch()
 
         then:
         response2.totalCount == response.totalCount;
@@ -71,9 +74,10 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
         response2.items[0].id == response.items[2].id
 
         when:
-        Page<Driver> response3 = connect.drivers().list(new DriverListRequest()
+        Page<Driver> response3 = connect.drivers().list()
                 .withPageIndex(1)
-                .withPageSize(1))
+                .withPageSize(1)
+                .fetch()
 
         then:
         response3.totalCount == response.totalCount;
@@ -87,9 +91,10 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
         response.items.size() == 3;
 
         when:
-        Page<Driver> response4 = connect.drivers().list(new DriverListRequest()
+        Page<Driver> response4 = connect.drivers().list()
                 .withPageIndex(0)
-                .withPageSize(5))
+                .withPageSize(5)
+                .fetch()
 
         then:
         response4.totalCount == response.totalCount;
@@ -99,9 +104,10 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can get next drivers"() {
         given:
-        Page<Driver> response = connect.drivers().list(new DriverListRequest()
+        Page<Driver> response = connect.drivers().list()
                 .withPageIndex(0)
-                .withPageSize(5))
+                .withPageSize(5)
+                .fetch()
         Set<String> firstPageIds = response.items*.id as Set
 
         when:
@@ -119,9 +125,11 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
     def "I can get next Drivers with filter"() {
         given:
         List<String> driverIds = getDriverList().subList(0, 4)*.id
-        Page<Driver> response = connect.drivers().list(new DriverListRequest()
+        Page<Driver> response = connect.drivers().list()
                 .withPageIndex(0)
-                .withPageSize(2))
+                .withPageSize(2)
+                .fetch()
+
         Set<String> firstPageIds = response.items*.id as Set
 
         when:
@@ -139,10 +147,13 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can collect all drivers"() {
         given:
-        int totalCount = connect.drivers().list(new DriverListRequest().withPageIndex(0).withPageSize(1)).totalCount
+        int totalCount = connect.drivers().list()
+                .withPageIndex(0)
+                .withPageSize(1)
+                .fetch().totalCount
 
         when:
-        List<Driver> response = connect.drivers().collect()
+        List<Driver> response = connect.drivers().list().collect()
 
         then:
         response.size() == totalCount
@@ -150,9 +161,10 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can get the fuel consumption"() {
         when:
-        List<DriverFuelConsumption> response = connect.drivers().fuelConsumption(new DriverDateRangeRequest()
+        List<DriverFuelConsumption> response = connect.drivers().fuelConsumption()
                 .withStartDate(LocalDate.now().minusMonths(1).withDayOfMonth(1).toDateTimeAtStartOfDay().toLocalDateTime())
-                .withEndDate(LocalDate.now().withDayOfMonth(1).toDateTimeAtStartOfDay().toLocalDateTime()))
+                .withEndDate(LocalDate.now().withDayOfMonth(1).toDateTimeAtStartOfDay().toLocalDateTime())
+                .fetch()
 
         then:
         response.size() > 0
@@ -160,7 +172,7 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
     }
 
     private List<Driver> getDriverList() {
-        driverList = driverList ?: connect.drivers().list().items;
+        driverList = driverList ?: connect.drivers().list().fetch().items;
     }
 
 }

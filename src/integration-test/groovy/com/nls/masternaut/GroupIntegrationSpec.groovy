@@ -7,7 +7,7 @@ class GroupIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can list groups"() {
         when:
-        List<Group> response = connect.groups().list()
+        List<Group> response = connect.groups().list().fetch()
 
         then:
         response.size() > 0;

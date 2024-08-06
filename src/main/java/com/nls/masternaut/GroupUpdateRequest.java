@@ -1,26 +1,29 @@
 package com.nls.masternaut;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nls.masternaut.client.IClient;
+
 import java.util.List;
 
 public class GroupUpdateRequest {
-    private String id;
+    @JsonIgnore
+    private final transient IClient client;
+
+    private final String id;
     private String name;
     private String parentId;
     private List<String> vehicleIds;
     private List<String> personIds;
 
-    protected  GroupUpdateRequest() {
-
+    GroupUpdateRequest(IClient client, String groupId) {
+        this.client = client;
+        this.id = groupId;
     }
 
-    public GroupUpdateRequest(String id) {
-        this.id = id;
-    }
-
-    public GroupUpdateRequest(Group group) {
-        this.id = group.getId();
+    public GroupUpdateRequest withGroup(Group group) {
         this.name = group.getName();
         this.parentId = group.getParentId();
+        return this;
     }
 
     public String getId() {
@@ -61,5 +64,9 @@ public class GroupUpdateRequest {
     public GroupUpdateRequest withPersonIds(List<String> personIds) {
         this.personIds = personIds;
         return this;
+    }
+
+    public Group commit() {
+        return client.put("group", this, Group.class);
     }
 }

@@ -26,7 +26,7 @@ in your projects as follows:
 
 ### Gradle/Grails
 ```groovy
-implementation 'com.9ls:masternaut-connect-jdk:1.34.1'
+implementation 'com.9ls:masternaut-connect-jdk:1.34.2'
 ```
 
 ### Apache Maven
@@ -34,13 +34,13 @@ implementation 'com.9ls:masternaut-connect-jdk:1.34.1'
 <dependency>
     <groupId>com.9ls</groupId>
     <artifactId>masternaut-connect-jdk</artifactId>
-    <version>1.34.1</version>
+    <version>1.34.2</version>
 </dependency>
 ```
 
 ### Apache Ivy
 ```xml
-<dependency org="com.9ls" name="masternaut-connect-jdk" rev="1.34.1" />
+<dependency org="com.9ls" name="masternaut-connect-jdk" rev="1.34.2" />
 ```
 
 ## Connect General
@@ -50,7 +50,7 @@ implementation 'com.9ls:masternaut-connect-jdk:1.34.1'
 Get the group hierarchy starting from the root node.
 
 ```java
-List<Group> groups = connect.groups().list();
+List<Group> groups = connect.groups().list().fetch();
 ```
 
 ### Add Group
@@ -58,9 +58,10 @@ List<Group> groups = connect.groups().list();
 Add a new group
 
 ```java
-Group group = connect.groups().add(new GroupAddRequest()
+Group group = connect.groups().add()
     .withName("A new group")
-    .withParentId("5045939e60b13e9f54b1e047"));
+    .withParentId("5045939e60b13e9f54b1e047")
+    .commit();
 ```
 
 ### Update Group
@@ -68,11 +69,12 @@ Group group = connect.groups().add(new GroupAddRequest()
 Update the group that matches the group id
 
 ```java
-Group group = connect.groups().update(new GroupUpdateRequest("652939f1e8b9ea0596fd2f2a")
+Group group = connect.groups().update("652939f1e8b9ea0596fd2f2a")
         .withName("A new group name")
         .withParentId("5045939e60b13e9f54b1e047")
         .withVehicleIds(Arrays.asList("54070", "54082"))
-        .withPersonIds(Arrays.asList("347626","347627")));
+        .withPersonIds(Arrays.asList("347626","347627"))
+        .commit();
 ```
 
 ### Delete Group
@@ -88,10 +90,11 @@ connect.groups().delete("652939f1e8b9ea0596fd2f2a");
 Returns the location (points of interest) matching the specified parameters.
 
 ```java
-Page<Location> locations = connect.locations().list(new LocationListRequest()
+Page<Location> locations = connect.locations().list()
         .withName("Masternaut")
         .withPageSize(50)
-        .withPageIndex(1));
+        .withPageIndex(1)
+        .fetch();
 ```
 
 The next page can be called from the returned object as follows
@@ -106,8 +109,9 @@ A helper method exists to fetch all the pages of locations and aggregate them
 into a single list of locations
 
 ```java
-List<Location> locations = connect.locations().collect(new LocationListRequest()
-    .withName("Masternaut"));
+List<Location> locations = connect.locations().list()
+    .withName("Masternaut")
+    .collect();
 ```
 
 ### Add Location
@@ -115,7 +119,7 @@ List<Location> locations = connect.locations().collect(new LocationListRequest()
 Add a new location with geo-fence boundary set to be CIRCULAR
 
 ```java
-Location location = connect.locations().add(new LocationUpdateRequest()
+Location location = connect.locations().add()
         .withName("Masternaut Restaurant")
         .withCategoryName("Restaurants")
         .withCoordinate(new Coordinate()
@@ -132,7 +136,8 @@ Location location = connect.locations().add(new LocationUpdateRequest()
         .withContact("Brad Woodenhouse")
         .withEmail("brad@test.com")
         .withPhoneNumber("+441234567")
-        .withNotes("Company restaurant in Leeds"));
+        .withNotes("Company restaurant in Leeds")
+        .commit();
 ```
 
 ### Update Location
@@ -141,17 +146,18 @@ Request to update location details. This is a partial update and only those deta
 in the request will be updated.
 
 ```java
-Location location = connect.locations().update("506b072b60b1f908e7b59cef", new LocationUpdateRequest()
+Location location = connect.locations().update("506b072b60b1f908e7b59cef")
         .withName("Masternaut Restaurant")
         .withCategoryName("Restaurants")
         .withCoordinate(new Coordinate()
                 .withLongitude(new BigDecimal("53.821729867523"))
                 .withLatitude(new BigDecimal("-1.3447768777930378")))
-        .withRadius(new BigDecimal("0.001")));
+        .withRadius(new BigDecimal("0.001")))
+        .commit();
 ```
 
 You can also prepopulate a `LocationUpdateRequest` with a details from a `Location`
-via the constructor.
+via the `withLocation()` method.
 
 ```java
 Location location = ...
@@ -173,7 +179,7 @@ Returns the details for all location categories. If a location category identifi
 details of the specified location category are returned.
 
 ```java
-List<LocationCategory> categories = connect.locationCategories().list();
+List<LocationCategory> categories = connect.locationCategories().list().fetch();
 ```
 
 ```java
@@ -185,9 +191,10 @@ LocationCategory category = connect.locationCategories().get("51d3e8e91f26593989
 Add a new location category.
 
 ```java
-LocationCategory category = connect.locationCategories().add(new LocationCategoryAddRequest()
+LocationCategory category = connect.locationCategories().add()
         .withName("Masternaut customer")
-        .withIcon("circle-red"));
+        .withIcon("circle-red")
+        .commit();
 ```
 
 ### Update Location Category
@@ -195,10 +202,10 @@ LocationCategory category = connect.locationCategories().add(new LocationCategor
 Update the location category that matches the category id.
 
 ```java
-LocationCategory category = connect.locationCategories().update(new LocationCategoryUpdateRequest(
-        "535917de60b113440f8f3df4")
+LocationCategory category = connect.locationCategories().update("535917de60b113440f8f3df4")
         .withName("Masternaut Customer")
-        .withIcon("circle-blue"));
+        .withIcon("circle-blue")
+        .commit();
 ```
 
 ### Delete Location Category
@@ -214,8 +221,9 @@ connect.locationCategories().delete("535917de60b113440f8f3df4");
 Returns the vehicles matching the specified parameters.
 
 ```java
-Page<Vehicle> vehicles = connect.vehicles().list(new VehicleListRequest()
-        .withVehicleIds(Arrays.asList("54070", "54072")));
+Page<Vehicle> vehicles = connect.vehicles().list()
+        .withVehicleIds(Arrays.asList("54070", "54072"))
+        .fetch();
 ```
 
 The next page can be called from the returned object as follows
@@ -230,8 +238,9 @@ A helper method exists to fetch all the pages of vehicles and aggregate them
 into a single list of vehicles.
 
 ```java
-List<Vehicle> vehicles = connect.vehicles().collect(new VehicleListRequest()
-    .withName("Masternaut"));
+List<Vehicle> vehicles = connect.vehicles().list()
+    .withName("Masternaut")
+    .collect();
 ```
 
 ### Update Vehicle
@@ -240,7 +249,7 @@ Update the details for an existing vehicle. This is a partial update and only th
 values specified will be updated.
 
 ```java
-Vehicle vehicle = connect.vehicles().update("54082", new VehicleUpdateRequest()
+Vehicle vehicle = connect.vehicles().update("54082")
         .withGroupId("5045939e60b13e9f54b1e046")
         .withName("YA99RTE_Crane")
         .withType(VehicleType.HGV)
@@ -248,7 +257,8 @@ Vehicle vehicle = connect.vehicles().update("54082", new VehicleUpdateRequest()
         .withStatus(VehicleStatus.SOLD)
         .withAssetCosts(new AssetCosts()
                 .withYearOfManufacture(2010)
-                .withCostCurrency("GBP")));
+                .withCostCurrency("GBP"))
+        .commit();
 ```
 
 ### List Driver
@@ -256,9 +266,10 @@ Vehicle vehicle = connect.vehicles().update("54082", new VehicleUpdateRequest()
 Returns the drivers matching the specified parameters.
 
 ```java
-Page<Driver> drivers = connect.drivers().list(new DriverListRequest()
+Page<Driver> drivers = connect.drivers().list()
         .withPageSize(50)
-        .withPageIndex(1));
+        .withPageIndex(1)
+        .fetch();
 ```
 
 The next page can be called from the returned object as follows
@@ -273,7 +284,7 @@ A helper method exists to fetch all the pages of drivers and aggregate them
 into a single list of drivers.
 
 ```java
-List<Drivers> drivers = connect.drivers().collect();
+List<Drivers> drivers = connect.drivers().list().collect();
 ```
 
 ### List Driver Details
@@ -289,10 +300,11 @@ Driver driver = connect.drivers().get("20464");
 Request to add a new driver.
 
 ```java
-Driver driver = connect.drivers().add(new DriverUpdateRequest()
+Driver driver = connect.drivers().add()
         .withName("Hayton Wood")
         .withActive(true)
-        .withGroupId("5045939e60b13e9f54b1e046"));
+        .withGroupId("5045939e60b13e9f54b1e046")
+        .commit();
 ```
 
 ### Update Driver
@@ -301,12 +313,13 @@ Request to update the details for an existing driver. This is a partial update a
 values specified will be updated.
 
 ```java
-Driver driver = connect.drivers().update("66973", new DriverUpdateRequest()
+Driver driver = connect.drivers().update("66973")
         .withName("Hayton Wood")
         .withActive(true)
         .withGroupId("5045939e60b13e9f54b1e046")
         .withTags(Arrays.asList("engineer"))
-        .withKeys(Arrays.asList(key1, key2, key3)));
+        .withKeys(Arrays.asList(key1, key2, key3))
+        .commit();
 ```
 
 ### Delete Driver
@@ -364,8 +377,9 @@ vehicle on a private journey is not returned. By default, vehicles which have a 
 not included in the response.
 
 ```java
-List<LivePosition> live = connect.tracking().live(new LivePositionRequest()
-        .withVehicleIds(Arrays.asList("54072", "54070")));
+List<LivePosition> live = connect.tracking().live()
+        .withVehicleIds(Arrays.asList("54072", "54070"))
+        .fetch();
 ```
 
 ### Live Position Latest
@@ -378,9 +392,10 @@ This method can be used to return details for only those vehicles where tracking
 processed since a specified processed date/time.
 
 ```java
-LatestLivePositionList positions = connect.tracking().latest(new LivePositionRequest()
+LatestLivePositionList positions = connect.tracking().latest()
         .withVehicleIds(Arrays.asList("54072", "54070")),
-        LocalDateTime.parse("2024-07-30T07:50:40.233"));
+        .withFromDateTime(LocalDateTime.parse("2024-07-30T07:50:40.233"))
+        .fetch();
 ```
 
 The response provides a method to get a refreshed response for tracking data processed
@@ -395,11 +410,11 @@ The example below will call the latest live positions every 15 seconds and call
 all the registered listeners with returned data.
 
 ```java
-LatestLivePositionPoller poller = LatestLivePositionPoller.builder(connect.tracking())
+LatestLivePositionPoller poller = LatestLivePositionPoller.builder(connect.latest()
+        .withFromDateTime(LocalDateTime.parse("2024-07-30T07:50:40.233"))
+        .withVehicleIds(Arrays.asList("54072", "54070")))
         .withPollingInterval(15, TimeUnit.SECONDS)
         .withFixedRate(true)
-        .withFromDateTime(LocalDateTime.parse("2024-07-30T07:50:40.233"))
-        .withRequest(new LivePositionRequest().withVehicleIds(Arrays.asList("54072", "54070")))
         .build();
 
 poller.addListener(new LatestLivePositionListener() {
@@ -422,10 +437,11 @@ not returned. The number of vehicles returned is restricted to the maximum speci
 vehicles are ordered based on distance from the search point.
 
 ```java
-List<ObjectDistance> matches = connect.vehicles().findNearest(new FindNearestRequest()
+List<ObjectDistance> matches = connect.vehicles().nearest()
         .withRadius(20)
         .withMaximumResultsToReturn(10)
-        .withPostCode("LS25"));
+        .withPostCode("LS25")
+        .fetch();
 ```
 
 ### Find Nearest Location
@@ -435,10 +451,11 @@ restricted to the maximum specified. The locations returned are ordered based on
 the specified search point.
 
 ```java
-List<ObjectDistance> matches = connect.locations().findNearest(new FindNearestRequest()
+List<ObjectDistance> matches = connect.locations().nearest()
         .withRadius(20)
         .withMaximumResultsToReturn(10)
-        .withPostCode("LS25"));
+        .withPostCode("LS25")
+        .fetch();
 ```
 
 ### Distance Travelled
@@ -448,10 +465,11 @@ started within the period. The end date for the journey does not have to be with
 The distance travelled on private journeys that started in the period is included.
 
 ```java
-List<DistanceTravelled> journeySummaries = connect.tracking().getJourneySummaries(new VehicleListDateRangeRequest()
+List<DistanceTravelled> journeySummaries = connect.tracking().getJourneySummaries()
         .withStartDate(LocalDateTime.parse("2024-03-01T00:00:00"))
         .withEndDate(LocalDateTime.parse("2024-04-01T00:00:00"))
-        .withVehicleIds(Arrays.asList("54072")));
+        .withVehicleIds(Arrays.asList("54072"))
+        .fetch();
 ```
 
 ## EcoDrive
@@ -462,10 +480,11 @@ Returns summary utilisation information for a vehicle for all journeys where the
 in the period.
 
 ```java
-List<VehicleFuelConsumption> fuelConsumptions = connect.vehicles().fuelConsumption(new VehicleDateRangeRequest()
+List<VehicleFuelConsumption> fuelConsumptions = connect.vehicles().fuelConsumption()
         .withStartDate(LocalDateTime.parse("2024-03-01T00:00:00"))
         .withEndDate(LocalDateTime.parse("2024-04-01T00:00:00"))
-        .withVehicleId("54072"));
+        .withVehicleId("54072")
+        .fetch();
 ```
 
 ### Drive Fuel Consumption
@@ -476,9 +495,10 @@ consumption details are returned for each vehicle driven by a driver. Includes t
 private journey.
 
 ```java
-List<DriverFuelConsumption> fuelConsumptions = connect.drivers().fuelConsumption(new DriverDateRangeRequest()
+List<DriverFuelConsumption> fuelConsumptions = connect.drivers().fuelConsumption()
         .withStartDate(LocalDateTime.parse("2024-03-01T00:00:00"))
-        .withEndDate(LocalDateTime.parse("2024-04-01T00:00:00")));
+        .withEndDate(LocalDateTime.parse("2024-04-01T00:00:00"))
+        .fetch();
 ```
 
 ## Custom Configuration
@@ -493,7 +513,7 @@ MasternautConnect connect = Masternaut.make(new Configuration()
     .withCustomerId("customerId")
     .withEndpoint("https://api.masternautconnect.com/connect-webservices/services/public/v1/customer/")
     .withMaxConnectionsPerRoute(20)
-    .withUserAgent("masternaut-connect-jdk 1.34.1")
+    .withUserAgent("masternaut-connect-jdk 1.34.2")
     .withBlockTillRateLimitReset(false)
     .withRequestsPerSecond(5)
     .withRequestBurstSize(20);

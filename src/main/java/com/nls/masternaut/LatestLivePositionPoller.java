@@ -14,8 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public final class LatestLivePositionPoller {
-    private final TrackingConnect tracking;
-    private final LivePositionRequest request;
+    private final LatestLivePositionRequest request;
     private final TimeUnit unit;
     private final Long period;
     private final boolean fixedRate;
@@ -25,17 +24,16 @@ public final class LatestLivePositionPoller {
     private LocalDateTime fromDateTime;
 
     private LatestLivePositionPoller(Builder builder) {
-        this.tracking = builder.tracking;
-        this.request = builder.request == null ? new LivePositionRequest() : builder.request;
-        this.fromDateTime = builder.fromDateTime;
+        this.request = builder.request;
+        this.fromDateTime = builder.request.getFromDateTime();
         this.unit = builder.unit;
         this.period = builder.period;
         this.fixedRate = builder.fixedRate;
         this.executorService = Executors.newScheduledThreadPool(1);
     }
 
-    public static Builder builder(TrackingConnect tracking) {
-        return new Builder(tracking);
+    public static Builder builder(LatestLivePositionRequest request) {
+        return new Builder(request);
     }
 
     public void addListener(LatestLivePositionListener listener) {
@@ -45,7 +43,7 @@ public final class LatestLivePositionPoller {
     }
 
     public void start(long delayInUnit) {
-        synchronized (tracking) {
+        synchronized (request) {
             if (scheduler != null) {
                 throw new IllegalStateException("Poller already started");
             }
@@ -57,7 +55,7 @@ public final class LatestLivePositionPoller {
     }
 
     public void stop() {
-        synchronized (tracking) {
+        synchronized (request) {
             if (scheduler == null) {
                 return;
             }
@@ -85,7 +83,10 @@ public final class LatestLivePositionPoller {
         @Override
         public void run() {
             try {
-                LatestLivePositionList latest = tracking.latest(request, fromDateTime);
+                LatestLivePositionList latest = request
+                        .withFromDateTime(fromDateTime)
+                        .fetch();
+
                 fromDateTime = latest.getProcessedDateTime();
 
                 synchronized (listeners) {
@@ -100,25 +101,13 @@ public final class LatestLivePositionPoller {
     }
 
     public static class Builder {
-        private final TrackingConnect tracking;
-        private LivePositionRequest request;
-        private LocalDateTime fromDateTime;
+        private final LatestLivePositionRequest request;
         private TimeUnit unit;
         private Long period;
         private boolean fixedRate;
 
-        Builder(TrackingConnect tracking) {
-            this.tracking = tracking;
-        }
-
-        public Builder withRequest(LivePositionRequest request) {
+        Builder(LatestLivePositionRequest request) {
             this.request = request;
-            return this;
-        }
-
-        public Builder withFromDateTime(LocalDateTime fromDateTime) {
-            this.fromDateTime = fromDateTime;
-            return this;
         }
 
         public Builder withPollingInterval(long period, TimeUnit unit) {
@@ -133,7 +122,7 @@ public final class LatestLivePositionPoller {
         }
 
         public LatestLivePositionPoller build() {
-            Objects.requireNonNull(tracking, "Tracking is required");
+            Objects.requireNonNull(request, "Request is required");
             Objects.requireNonNull(period, "Polling interval period is required");
             Objects.requireNonNull(unit, "Polling interval unit is required");
 

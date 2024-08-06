@@ -1,10 +1,6 @@
 package com.nls.masternaut;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.nls.masternaut.client.HttpClient;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DriverConnect {
     private final HttpClient client;
@@ -17,41 +13,16 @@ public class DriverConnect {
         return client.get("driver/" + driverId, null, Driver.class);
     }
 
-    public Page<Driver> list() {
-        return list(new DriverListRequest());
+    public DriverListRequest list() {
+        return new DriverListRequest(client);
     }
 
-    public Page<Driver> list(DriverListRequest request) {
-        return new Page<Driver>(
-            client.get("driver", request, new TypeReference<PageResponse<Driver>>() { }),
-            () -> list(request.next()));
+    public DriverAddRequest add() {
+        return new DriverAddRequest(client);
     }
 
-    public List<Driver> collect() {
-        return collect(new DriverListRequest());
-    }
-
-    private List<Driver> collect(DriverListRequest request) {
-        if (request.getPageSize() == null) {
-            request.withPageSize(200);
-        }
-
-        List<Driver> result = new ArrayList<>();
-        Page<Driver> page = list(request.withPageIndex(0));
-        do {
-            result.addAll(page.getItems());
-            page = page.next();
-        } while (page.hasNext());
-
-        return result;
-    }
-
-    public Driver add(DriverUpdateRequest request) {
-        return client.post("driver", request.withId(null), Driver.class);
-    }
-
-    public Driver update(String driverId, DriverUpdateRequest request) {
-        return client.put("driver/" + driverId, request.withId(driverId), Driver.class);
+    public DriverUpdateRequest update(String driverId) {
+        return new DriverUpdateRequest(client).withId(driverId);
     }
 
     public void delete(String driverId) {
@@ -70,8 +41,8 @@ public class DriverConnect {
         return client.delete("driver/" + driverId + "/vehicle", null, Driver.class);
     }
 
-    public List<DriverFuelConsumption> fuelConsumption(DriverDateRangeRequest request) {
-        return client.get("fuel/driver", request, new TypeReference<List<DriverFuelConsumption>>() { });
+    public DriverFuelConsumptionRequest fuelConsumption() {
+        return new DriverFuelConsumptionRequest(client);
     }
 
     // Not implemented

@@ -34,7 +34,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Base64;
 
-public class HttpClient {
+public class HttpClient implements IClient {
     private static final int TIMEOUT_MILLIS = -1;
 
     private final RequestParameterMapper parameterMapper = new RequestParameterMapper();
@@ -50,24 +50,29 @@ public class HttpClient {
         this.rateLimiter = new RateLimiter(configuration.getRequestsPerSecond(), configuration.getRequestBurstSize());
     }
 
+    @Override
     public <T> T get(String path, Object parameters, TypeReference<T> responseType) {
         return executeAndTransform(new HttpGet(getUri(path, parameters)), responseType);
     }
 
+    @Override
     public <T> T get(String path, Object parameters, Class<T> responseType) {
         return executeAndTransform(new HttpGet(getUri(path, parameters)), responseType);
     }
 
+    @Override
     public <T> T post(String path, Object data, Class<T> responseType) {
         HttpPost request = setPayload(new HttpPost(getUri(path, null)), data);
         return executeAndTransform(request, responseType);
     }
 
+    @Override
     public <T> T put(String path, Object data, Class<T> responseType) {
         HttpPut request = setPayload(new HttpPut(getUri(path, null)), data);
         return executeAndTransform(request, responseType);
     }
 
+    @Override
     public <T> T delete(String path, Object parameters, Class<T> responseType) {
         return executeAndTransform(new HttpDelete(getUri(path, parameters)), responseType);
     }

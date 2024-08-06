@@ -1,9 +1,6 @@
 package com.nls.masternaut;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.nls.masternaut.client.HttpClient;
-
-import java.util.List;
 
 public class LocationCategoryConnect {
     private final HttpClient client;
@@ -12,20 +9,20 @@ public class LocationCategoryConnect {
         this.client = client;
     }
 
-    public List<LocationCategory> list() {
-        return client.get("location/category", null, new TypeReference<List<LocationCategory>>() { });
+    public LocationCategoryListRequest list() {
+        return new LocationCategoryListRequest(client);
     }
 
     public LocationCategory get(String categoryId) {
         return client.get("location/category/" + categoryId, null, LocationCategory.class);
     }
 
-    public LocationCategory add(LocationCategoryAddRequest request) {
-        return client.post("location/category", null, LocationCategory.class);
+    public LocationCategoryAddRequest add() {
+        return new LocationCategoryAddRequest(client);
     }
 
-    public LocationCategory update(LocationCategoryUpdateRequest request) {
-        return client.put("location/category", null, LocationCategory.class);
+    public LocationCategoryUpdateRequest update(String categoryId) {
+        return new LocationCategoryUpdateRequest(client, categoryId);
     }
 
     public void delete(String categoryId) {

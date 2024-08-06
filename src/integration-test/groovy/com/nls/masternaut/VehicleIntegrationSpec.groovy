@@ -2,7 +2,6 @@ package com.nls.masternaut
 
 import com.nls.masternaut.util.ObjectMapperFactory
 import org.joda.time.LocalDate
-import org.joda.time.LocalDateTime
 
 //@Ignore
 class VehicleIntegrationSpec extends BaseIntegrationSpec {
@@ -10,7 +9,7 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can list vehicles"() {
         when:
-        Page<Vehicle> response = connect.vehicles().list()
+        Page<Vehicle> response = connect.vehicles().list().fetch()
 
         then:
         response.totalCount > 0;
@@ -27,9 +26,10 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can page vehicles"() {
         when:
-        Page<Vehicle> response = connect.vehicles().list(new VehicleListRequest()
+        Page<Vehicle> response = connect.vehicles().list()
             .withPageIndex(0)
-            .withPageSize(3))
+            .withPageSize(3)
+            .fetch()
 
         then:
         response.totalCount > 3;
@@ -37,9 +37,10 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
         response.items.size() == 3;
 
         when:
-        Page<Vehicle> response1 = connect.vehicles().list(new VehicleListRequest()
+        Page<Vehicle> response1 = connect.vehicles().list()
                 .withPageIndex(0)
-                .withPageSize(2))
+                .withPageSize(2)
+                .fetch()
 
         then:
         response1.totalCount == response.totalCount;
@@ -49,9 +50,10 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
         response1.items[1].id == response.items[1].id
 
         when:
-        Page<Vehicle> response2 = connect.vehicles().list(new VehicleListRequest()
+        Page<Vehicle> response2 = connect.vehicles().list()
                 .withPageIndex(1)
-                .withPageSize(2))
+                .withPageSize(2)
+                .fetch()
 
         then:
         response2.totalCount == response.totalCount;
@@ -60,9 +62,10 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
         response2.items[0].id == response.items[2].id
 
         when:
-        Page<Vehicle> response3 = connect.vehicles().list(new VehicleListRequest()
+        Page<Vehicle> response3 = connect.vehicles().list()
                 .withPageIndex(1)
-                .withPageSize(1))
+                .withPageSize(1)
+                .fetch()
 
         then:
         response3.totalCount == response.totalCount;
@@ -76,9 +79,10 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
         response.items.size() == 3;
 
         when:
-        Page<Vehicle> response4 = connect.vehicles().list(new VehicleListRequest()
+        Page<Vehicle> response4 = connect.vehicles().list()
                 .withPageIndex(0)
-                .withPageSize(5))
+                .withPageSize(5)
+                .fetch()
 
         then:
         response4.totalCount == response.totalCount;
@@ -88,8 +92,9 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can get next vehicles"() {
         given:
-        Page<Vehicle> response = connect.vehicles().list(new VehicleListRequest()
-                .withPageSize(5))
+        Page<Vehicle> response = connect.vehicles().list()
+                .withPageSize(5)
+                .fetch()
         Set<String> firstPageIds = response.items*.id as Set
 
         when:
@@ -107,10 +112,11 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
     def "I can get next vehicles with filter"() {
         given:
         List<String> vehicleIds = getVehicleList().subList(0, 10)*.id
-        Page<Vehicle> response = connect.vehicles().list(new VehicleListRequest()
+        Page<Vehicle> response = connect.vehicles().list()
                 .withPageIndex(0)
                 .withPageSize(5)
-                .withVehicleIds(vehicleIds))
+                .withVehicleIds(vehicleIds)
+                .fetch()
         Set<String> firstPageIds = response.items*.id as Set
 
         when:
@@ -140,8 +146,9 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
         List<String> vehicleIds = getVehicleList().subList(0, 10)*.id
 
         when:
-        List<Vehicle> response = connect.vehicles().collect(new VehicleListRequest()
-                .withVehicleIds(vehicleIds))
+        List<Vehicle> response = connect.vehicles().list()
+                .withVehicleIds(vehicleIds)
+                .collect()
 
         then:
         response.size() == vehicleIds.size()
@@ -150,10 +157,11 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
         }
 
         when:
-        response = connect.vehicles().collect(new VehicleListRequest()
+        response = connect.vehicles().list()
                 .withPageIndex(0)
                 .withPageSize(9)
-                .withVehicleIds(vehicleIds))
+                .withVehicleIds(vehicleIds)
+                .collect()
 
         then:
         response.size() == vehicleIds.size()
@@ -167,7 +175,9 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
         Vehicle vehicle = getVehicleList()[0]
 
         when:
-        Page<Vehicle> response = connect.vehicles().list(new VehicleListRequest().withName(vehicle.name))
+        Page<Vehicle> response = connect.vehicles().list()
+                .withName(vehicle.name)
+                .fetch()
 
         then:
         response.totalCount == 1
@@ -183,8 +193,9 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
         List<String> vehicleIds = (vehicles*.id as List).subList(0, 2)
 
         when:
-        Page<Vehicle> response = connect.vehicles().list(new VehicleListRequest()
-                .withVehicleIds(vehicleIds))
+        Page<Vehicle> response = connect.vehicles().list()
+                .withVehicleIds(vehicleIds)
+                .fetch()
 
         then:
         response.totalCount == 2
@@ -200,8 +211,9 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
         List<String> groupIds = ((vehicles*.groupId as Set) as List).subList(0, 2)
 
         when:
-        Page<Vehicle> response = connect.vehicles().list(new VehicleListRequest()
-                .withGroupIds(groupIds))
+        Page<Vehicle> response = connect.vehicles().list()
+                .withGroupIds(groupIds)
+                .fetch()
 
         then:
         response.totalCount > 0
@@ -219,11 +231,12 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
         println("########################################")
 
         when:
-        List<ObjectDistance> response = connect.vehicles().findNearest(new FindNearestRequest()
+        List<ObjectDistance> response = connect.vehicles().nearest()
                 .withRadius(2)
                 .withMaximumResultsToReturn(10)
                 .withLongitude(position.longitude)
-                .withLatitude(position.latitude))
+                .withLatitude(position.latitude)
+                .fetch()
         println(ObjectMapperFactory.make().writeValueAsString(response))
 
         then:
@@ -234,9 +247,10 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can get the fuel consumption"() {
         when:
-        List<VehicleFuelConsumption> response = connect.vehicles().fuelConsumption(new VehicleDateRangeRequest()
+        List<VehicleFuelConsumption> response = connect.vehicles().fuelConsumption()
                 .withStartDate(LocalDate.now().minusMonths(1).withDayOfMonth(1).toDateTimeAtStartOfDay().toLocalDateTime())
-                .withEndDate(LocalDate.now().withDayOfMonth(1).toDateTimeAtStartOfDay().toLocalDateTime()))
+                .withEndDate(LocalDate.now().withDayOfMonth(1).toDateTimeAtStartOfDay().toLocalDateTime())
+                .fetch()
 
         then:
         response.size() > 0
@@ -245,9 +259,10 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
 
     def "I get an error if I use multiple filters"() {
         when:
-        Page<Vehicle> response = connect.vehicles().list(new VehicleListRequest()
+        Page<Vehicle> response = connect.vehicles().list()
                 .withVehicleIds(Arrays.asList('521665', '668524'))
-                .withGroupIds(Arrays.asList('53ccf25cbb50290767c898f1', '53ccf25cbb50290767c898eb')))
+                .withGroupIds(Arrays.asList('53ccf25cbb50290767c898f1', '53ccf25cbb50290767c898eb'))
+                .fetch()
 
         then:
         MasternautServerException e = thrown(MasternautServerException)
@@ -257,6 +272,6 @@ class VehicleIntegrationSpec extends BaseIntegrationSpec {
     }
 
     private List<Vehicle> getVehicleList() {
-        vehicleList = vehicleList ?: connect.vehicles().list().items;
+        vehicleList = vehicleList ?: connect.vehicles().list().fetch().items;
     }
 }

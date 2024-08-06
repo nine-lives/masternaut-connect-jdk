@@ -4,7 +4,7 @@ class LocationCategoryIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can list location categories"() {
         when:
-        List<LocationCategory> response = connect.locationCategories().list()
+        List<LocationCategory> response = connect.locationCategories().list().fetch()
 
         then:
         response.size() > 0;

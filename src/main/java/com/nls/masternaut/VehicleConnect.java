@@ -1,10 +1,6 @@
 package com.nls.masternaut;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.nls.masternaut.client.HttpClient;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class VehicleConnect {
     private final HttpClient client;
@@ -13,45 +9,20 @@ public class VehicleConnect {
         this.client = client;
     }
 
-    public Page<Vehicle> list() {
-        return list(new VehicleListRequest());
+    public VehicleListRequest list() {
+        return new VehicleListRequest(client);
     }
 
-    public Page<Vehicle> list(VehicleListRequest request) {
-        return new Page<Vehicle>(
-            client.get("vehicle", request, new TypeReference<PageResponse<Vehicle>>() { }),
-            () -> list(request.next()));
+    public VehicleFindNearestRequest nearest() {
+        return new VehicleFindNearestRequest(client);
     }
 
-    public List<Vehicle> collect() {
-        return collect(new VehicleListRequest());
+    public VehicleFuelConsumptionRequest fuelConsumption() {
+        return new VehicleFuelConsumptionRequest(client);
     }
 
-    public List<Vehicle> collect(VehicleListRequest request) {
-        if (request.getPageSize() == null) {
-            request.withPageSize(200);
-        }
-
-        List<Vehicle> result = new ArrayList<>();
-        Page<Vehicle> page = list(request.withPageIndex(0));
-        do {
-            result.addAll(page.getItems());
-            page = page.next();
-        } while (page.hasNext());
-
-        return result;
-    }
-
-    public List<ObjectDistance> findNearest(FindNearestRequest request) {
-        return client.get("vehicle/nearest", request, new TypeReference<List<ObjectDistance>>() { });
-    }
-
-    public List<VehicleFuelConsumption> fuelConsumption(VehicleDateRangeRequest request) {
-        return client.get("fuel/vehicle", request, new TypeReference<List<VehicleFuelConsumption>>() { });
-    }
-
-    public Vehicle update(String vehicleId, VehicleUpdateRequest request) {
-        return client.put("vehicle/" + vehicleId, request, Vehicle.class);
+    public VehicleUpdateRequest update(String vehicleId) {
+        return new VehicleUpdateRequest(client, vehicleId);
     }
 
     // Not implemented

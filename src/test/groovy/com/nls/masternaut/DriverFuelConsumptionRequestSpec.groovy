@@ -5,12 +5,12 @@ import com.nls.masternaut.util.RequestParameterMapper
 import org.joda.time.LocalDateTime
 import spock.lang.Specification
 
-class DriverDateRangeRequestSpec extends Specification {
+class DriverFuelConsumptionRequestSpec extends Specification {
     private RequestParameterMapper mapper = new RequestParameterMapper()
 
     def "I can convert a request to parameters"() {
         given:
-        DriverDateRangeRequest request = new DriverDateRangeRequest()
+        DriverFuelConsumptionRequest request = new DriverFuelConsumptionRequest()
                 .withStartDate(LocalDateTime.parse("2024-04-01T07:50:40.233"))
                 .withEndDate(LocalDateTime.parse("2024-05-01T07:50:40.233"))
                 .withDriverId("D1")
@@ -28,6 +28,8 @@ class DriverDateRangeRequestSpec extends Specification {
         entity.endDate == '2024-05-01T07:50:40.233'
         entity.driverId == 'D1'
         entity.groupId == 'G1'
+        entity.clazz == null
+        entity.client == null
 
         when:
         String result = mapper.write(request)

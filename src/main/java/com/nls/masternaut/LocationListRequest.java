@@ -1,15 +1,16 @@
 package com.nls.masternaut;
 
-public class LocationListRequest extends PageRequest<LocationListRequest> {
+import com.nls.masternaut.client.IClient;
 
+public class LocationListRequest extends PageRequest<LocationListRequest, Location> {
     private String name;
     private String address;
     private String category;
     private String reference;
     private String phoneNumber;
 
-    public LocationListRequest() {
-        super(LocationListRequest.class);
+    LocationListRequest(IClient client) {
+        super(client, LocationListRequest.class);
     }
 
     public String getName() {
@@ -55,5 +56,10 @@ public class LocationListRequest extends PageRequest<LocationListRequest> {
     public LocationListRequest withPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
         return this;
+    }
+
+    @Override
+    protected String getPath() {
+        return "location/current";
     }
 }

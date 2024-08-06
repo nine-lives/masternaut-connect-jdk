@@ -1,30 +1,40 @@
 package com.nls.masternaut;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.nls.masternaut.client.IClient;
+import org.joda.time.LocalDateTime;
 
 import java.util.List;
 
-public class LivePositionRequest {
+public class LatestLivePositionRequest {
     @JsonIgnore
     private final transient IClient client;
 
+    private LocalDateTime fromDateTime;
     private List<String> vehicleIds;
     private List<String> driverIds;
     private List<String> groupIds;
     private Boolean showAllVehicleStatus;
     private Boolean hideSpeedIfSpeedSensitive;
 
-    LivePositionRequest(IClient client) {
+    LatestLivePositionRequest(IClient client) {
         this.client = client;
+    }
+
+    LocalDateTime getFromDateTime() {
+        return fromDateTime;
+    }
+
+    public LatestLivePositionRequest withFromDateTime(LocalDateTime fromDateTime) {
+        this.fromDateTime = fromDateTime;
+        return this;
     }
 
     public List<String> getVehicleIds() {
         return vehicleIds;
     }
 
-    public LivePositionRequest withVehicleIds(List<String> vehicleIds) {
+    public LatestLivePositionRequest withVehicleIds(List<String> vehicleIds) {
         this.vehicleIds = vehicleIds;
         return this;
     }
@@ -33,7 +43,7 @@ public class LivePositionRequest {
         return driverIds;
     }
 
-    public LivePositionRequest withDriverIds(List<String> driverIds) {
+    public LatestLivePositionRequest withDriverIds(List<String> driverIds) {
         this.driverIds = driverIds;
         return this;
     }
@@ -42,7 +52,7 @@ public class LivePositionRequest {
         return groupIds;
     }
 
-    public LivePositionRequest withGroupIds(List<String> groupIds) {
+    public LatestLivePositionRequest withGroupIds(List<String> groupIds) {
         this.groupIds = groupIds;
         return this;
     }
@@ -51,7 +61,7 @@ public class LivePositionRequest {
         return showAllVehicleStatus;
     }
 
-    public LivePositionRequest withShowAllVehicleStatus(Boolean showAllVehicleStatus) {
+    public LatestLivePositionRequest withShowAllVehicleStatus(Boolean showAllVehicleStatus) {
         this.showAllVehicleStatus = showAllVehicleStatus;
         return this;
     }
@@ -60,13 +70,13 @@ public class LivePositionRequest {
         return hideSpeedIfSpeedSensitive;
     }
 
-    public LivePositionRequest withHideSpeedIfSpeedSensitive(Boolean hideSpeedIfSpeedSensitive) {
+    public LatestLivePositionRequest withHideSpeedIfSpeedSensitive(Boolean hideSpeedIfSpeedSensitive) {
         this.hideSpeedIfSpeedSensitive = hideSpeedIfSpeedSensitive;
         return this;
     }
 
-    public LivePositionRequest copy() {
-        return new LivePositionRequest(client)
+    private LatestLivePositionRequest copy() {
+        return new LatestLivePositionRequest(client)
                 .withDriverIds(driverIds)
                 .withGroupIds(groupIds)
                 .withVehicleIds(vehicleIds)
@@ -74,7 +84,9 @@ public class LivePositionRequest {
                 .withShowAllVehicleStatus(showAllVehicleStatus);
     }
 
-    public List<LivePosition> fetch() {
-        return client.get("tracking/live", this, new TypeReference<List<LivePosition>>() { });
+    public LatestLivePositionList fetch() {
+        LatestLivePositionRequest clone = copy();
+        return client.get("tracking/live/latest", withFromDateTime(fromDateTime), LatestLivePositionList.class)
+                .withRefresh((from) -> clone.withFromDateTime(from).fetch());
     }
 }

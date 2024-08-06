@@ -1,9 +1,6 @@
 package com.nls.masternaut;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.nls.masternaut.client.HttpClient;
-
-import java.util.List;
 
 public class GroupConnect {
     private final HttpClient client;
@@ -12,8 +9,8 @@ public class GroupConnect {
         this.client = client;
     }
 
-    public List<Group> list() {
-        return client.get("group", null, new TypeReference<List<Group>>() { });
+    public GroupListRequest list() {
+        return new GroupListRequest(client);
     }
 
 //    public Group get(String id) {
@@ -23,15 +20,15 @@ public class GroupConnect {
     /**
      * No access to tested
      */
-    public Group add(GroupAddRequest request) {
-        return client.post("group", request, Group.class);
+    public GroupAddRequest add() {
+        return new GroupAddRequest(client);
     }
 
     /**
      * No access to tested
      */
-    public Group update(GroupUpdateRequest request) {
-        return client.put("group", request, Group.class);
+    public GroupUpdateRequest update(String groupId) {
+        return new GroupUpdateRequest(client, groupId);
     }
 
     /**

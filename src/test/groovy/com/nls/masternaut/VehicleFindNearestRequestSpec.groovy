@@ -1,16 +1,17 @@
 
 package com.nls.masternaut
 
+import com.nls.masternaut.util.DummyClient
 import com.nls.masternaut.util.RequestParameterMapper
 import org.joda.time.LocalDateTime
 import spock.lang.Specification
 
-class FindNearestRequestSpec extends Specification {
+class VehicleFindNearestRequestSpec extends Specification {
     private RequestParameterMapper mapper = new RequestParameterMapper()
 
     def "I can convert a request to parameters"() {
         given:
-        FindNearestRequest request = new FindNearestRequest()
+        VehicleFindNearestRequest request = new VehicleFindNearestRequest(new DummyClient())
                 .withRadius(11)
                 .withMaximumResultsToReturn(10)
                 .withRoadNumber("48")
@@ -49,6 +50,8 @@ class FindNearestRequestSpec extends Specification {
         entity.longitude == '-1.3421'
         entity.lastMovedStartDateTime == '2024-04-20T07:50:40.233'
         entity.lastMovedEndDateTime == '2025-04-20T07:50:40.233'
+        entity.client == null
+        entity.clazz == null
 
         when:
         String result = mapper.write(request)

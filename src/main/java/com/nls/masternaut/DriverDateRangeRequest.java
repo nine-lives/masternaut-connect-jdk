@@ -1,46 +1,54 @@
 package com.nls.masternaut;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.joda.time.LocalDateTime;
 
-public class DriverDateRangeRequest {
+public abstract class DriverDateRangeRequest<T extends DriverDateRangeRequest<T>> {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String driverId;
     private String groupId;
 
+    @JsonIgnore
+    private final transient Class<T> clazz;
+
+    DriverDateRangeRequest(Class<T> clazz) {
+        this.clazz = clazz;
+    }
+
     public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public DriverDateRangeRequest withStartDate(LocalDateTime startDate) {
+    public T withStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
-        return this;
+        return clazz.cast(this);
     }
 
     public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public DriverDateRangeRequest withEndDate(LocalDateTime endDate) {
+    public T withEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
-        return this;
+        return clazz.cast(this);
     }
 
     public String getDriverId() {
         return driverId;
     }
 
-    public DriverDateRangeRequest withDriverId(String driverId) {
+    public T withDriverId(String driverId) {
         this.driverId = driverId;
-        return this;
+        return clazz.cast(this);
     }
 
     public String getGroupId() {
         return groupId;
     }
 
-    public DriverDateRangeRequest withGroupId(String groupId) {
+    public T withGroupId(String groupId) {
         this.groupId = groupId;
-        return this;
+        return clazz.cast(this);
     }
 }
