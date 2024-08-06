@@ -17,9 +17,13 @@ public abstract class PageRequest<T extends PageRequest<T, R>, R> implements Clo
     @JsonIgnore
     private final transient IClient client;
 
-    protected PageRequest(IClient client, Class<T> clazz) {
+    @JsonIgnore
+    private final transient TypeReference<PageResponse<R>> returnType;
+
+    protected PageRequest(IClient client, Class<T> clazz, TypeReference<PageResponse<R>> returnType) {
         this.client = client;
         this.clazz = clazz;
+        this.returnType = returnType;
     }
 
     public Integer getPageIndex() {
@@ -50,7 +54,7 @@ public abstract class PageRequest<T extends PageRequest<T, R>, R> implements Clo
 
     public Page<R> fetch() {
         return new Page<>(
-            client.get(getPath(), this, new TypeReference<PageResponse<R>>() { }),
+            client.get(getPath(), this, returnType),
             () -> this.next().fetch());
     }
 

@@ -26,7 +26,8 @@ class DriverIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can get a driver"() {
         given:
-        Driver driver = getDriverList()[0];
+        Driver driver = getDriverList()[0]
+
 
         when:
         Driver response = connect.drivers().get(driver.id);

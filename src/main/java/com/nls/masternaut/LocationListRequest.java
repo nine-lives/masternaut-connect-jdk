@@ -1,5 +1,6 @@
 package com.nls.masternaut;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.nls.masternaut.client.IClient;
 
 public class LocationListRequest extends PageRequest<LocationListRequest, Location> {
@@ -10,7 +11,7 @@ public class LocationListRequest extends PageRequest<LocationListRequest, Locati
     private String phoneNumber;
 
     LocationListRequest(IClient client) {
-        super(client, LocationListRequest.class);
+        super(client, LocationListRequest.class, new TypeReference<PageResponse<Location>>() { });
     }
 
     public String getName() {

@@ -1,5 +1,6 @@
 package com.nls.masternaut;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.nls.masternaut.client.IClient;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public class VehicleListRequest extends PageRequest<VehicleListRequest, Vehicle>
     private String name;
 
     VehicleListRequest(IClient client) {
-        super(client, VehicleListRequest.class);
+        super(client, VehicleListRequest.class, new TypeReference<PageResponse<Vehicle>>() { });
     }
 
     public List<String> getVehicleIds() {
