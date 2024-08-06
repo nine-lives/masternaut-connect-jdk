@@ -11,7 +11,7 @@ class LatestLivePositionIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can get latest live positions"() {
         when:
-        LatestLivePositionList response = connect.tracking().latest();
+        LatestLivePositionList response = connect.tracking().latest().fetch();
 
         then:
         response.totalCount > 0;
@@ -28,8 +28,10 @@ class LatestLivePositionIntegrationSpec extends BaseIntegrationSpec {
         List<String> vehicleIds = ((positions*.assetId as Set) as List).subList(0, 2)
 
         when:
-        LatestLivePositionList response = connect.tracking().latest(new LivePositionRequest()
-                .withVehicleIds(vehicleIds))
+        LatestLivePositionList response = connect.tracking().latest()
+                .withVehicleIds(vehicleIds)
+                .fetch()
+
 
         then:
         response.items.size() == 2
@@ -44,8 +46,9 @@ class LatestLivePositionIntegrationSpec extends BaseIntegrationSpec {
         List<String> driverIds = ((positions*.driverId as Set) as List).subList(0, 2)
 
         when:
-        LatestLivePositionList response = connect.tracking().latest(new LivePositionRequest()
-                .withDriverIds(driverIds))
+        LatestLivePositionList response = connect.tracking().latest()
+                .withDriverIds(driverIds)
+                .fetch()
 
         then:
         response.items.size() == 2
@@ -60,8 +63,9 @@ class LatestLivePositionIntegrationSpec extends BaseIntegrationSpec {
         List<String> groupIds = ((positions*.assetGroupId as Set) as List).subList(0, 2)
 
         when:
-        LatestLivePositionList response = connect.tracking().latest(new LivePositionRequest()
-                .withGroupIds(groupIds))
+        LatestLivePositionList response = connect.tracking().latest()
+                .withGroupIds(groupIds)
+                .fetch()
 
         then:
         response.items.size() >= 2
@@ -72,7 +76,7 @@ class LatestLivePositionIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can refresh latest live positions"() {
         given:
-        LatestLivePositionList initial = connect.tracking().latest()
+        LatestLivePositionList initial = connect.tracking().latest().fetch()
         sleep(15000)
 
         when:
@@ -111,7 +115,7 @@ class LatestLivePositionIntegrationSpec extends BaseIntegrationSpec {
             }
         }
 
-        LatestLivePositionPoller poller = LatestLivePositionPoller.builder(connect.tracking())
+        LatestLivePositionPoller poller = LatestLivePositionPoller.builder(connect.tracking().latest())
                 .withFixedRate(true)
                 .withPollingInterval(15, TimeUnit.SECONDS)
                 .build()
@@ -132,6 +136,6 @@ class LatestLivePositionIntegrationSpec extends BaseIntegrationSpec {
     }
 
     private List<LivePosition> getPositionList() {
-        positionList = positionList ?: connect.tracking().live();
+        positionList = positionList ?: connect.tracking().live().fetch();
     }
 }

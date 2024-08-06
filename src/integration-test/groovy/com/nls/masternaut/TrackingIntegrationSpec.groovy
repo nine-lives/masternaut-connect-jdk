@@ -8,9 +8,10 @@ import org.joda.time.LocalDate
 class TrackingIntegrationSpec extends BaseIntegrationSpec {
     def "I can get journey summaries"() {
         when:
-        List<DistanceTravelled> response = connect.tracking().getJourneySummaries(new VehicleListDateRangeRequest()
+        List<DistanceTravelled> response = connect.tracking().getJourneySummaries()
             .withStartDate(LocalDate.now().minusMonths(1).withDayOfMonth(1).toDateTimeAtStartOfDay().toLocalDateTime())
-            .withEndDate(LocalDate.now().withDayOfMonth(1).minusDays(1).toDateTimeAtStartOfDay().toLocalDateTime().minusSeconds(1)))
+            .withEndDate(LocalDate.now().withDayOfMonth(1).minusDays(1).toDateTimeAtStartOfDay().toLocalDateTime().minusSeconds(1))
+            .fetch()
 
         then:
         response.size() > 0;

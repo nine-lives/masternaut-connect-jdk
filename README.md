@@ -26,7 +26,7 @@ in your projects as follows:
 
 ### Gradle/Grails
 ```groovy
-implementation 'com.9ls:masternaut-connect-jdk:1.34.2'
+implementation 'com.9ls:masternaut-connect-jdk:1.34.3'
 ```
 
 ### Apache Maven
@@ -34,13 +34,13 @@ implementation 'com.9ls:masternaut-connect-jdk:1.34.2'
 <dependency>
     <groupId>com.9ls</groupId>
     <artifactId>masternaut-connect-jdk</artifactId>
-    <version>1.34.2</version>
+    <version>1.34.3</version>
 </dependency>
 ```
 
 ### Apache Ivy
 ```xml
-<dependency org="com.9ls" name="masternaut-connect-jdk" rev="1.34.2" />
+<dependency org="com.9ls" name="masternaut-connect-jdk" rev="1.34.3" />
 ```
 
 ## Connect General
@@ -410,7 +410,7 @@ The example below will call the latest live positions every 15 seconds and call
 all the registered listeners with returned data.
 
 ```java
-LatestLivePositionPoller poller = LatestLivePositionPoller.builder(connect.latest()
+LatestLivePositionPoller poller = LatestLivePositionPoller.builder(connect.tracking().latest()
         .withFromDateTime(LocalDateTime.parse("2024-07-30T07:50:40.233"))
         .withVehicleIds(Arrays.asList("54072", "54070")))
         .withPollingInterval(15, TimeUnit.SECONDS)
@@ -513,7 +513,7 @@ MasternautConnect connect = Masternaut.make(new Configuration()
     .withCustomerId("customerId")
     .withEndpoint("https://api.masternautconnect.com/connect-webservices/services/public/v1/customer/")
     .withMaxConnectionsPerRoute(20)
-    .withUserAgent("masternaut-connect-jdk 1.34.2")
+    .withUserAgent("masternaut-connect-jdk 1.34.3")
     .withBlockTillRateLimitReset(false)
     .withRequestsPerSecond(5)
     .withRequestBurstSize(20);

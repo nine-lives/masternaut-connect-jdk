@@ -15,7 +15,7 @@ public class DriverFuelConsumptionRequest extends DriverDateRangeRequest<DriverF
         this.client = client;
     }
 
-    public List<VehicleFuelConsumption> fetch() {
-        return client.get("fuel/vehicle", this, new TypeReference<List<VehicleFuelConsumption>>() { });
+    public List<DriverFuelConsumption> fetch() {
+        return client.get("fuel/driver", this, new TypeReference<List<DriverFuelConsumption>>() { });
     }
 }

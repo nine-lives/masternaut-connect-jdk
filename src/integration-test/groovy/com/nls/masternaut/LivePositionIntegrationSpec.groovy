@@ -8,7 +8,7 @@ class LivePositionIntegrationSpec extends BaseIntegrationSpec {
 
     def "I can get live positions"() {
         when:
-        List<LivePosition> response = connect.tracking().live();
+        List<LivePosition> response = connect.tracking().live().fetch();
 
         then:
         response.size() > 0;
@@ -25,8 +25,9 @@ class LivePositionIntegrationSpec extends BaseIntegrationSpec {
         List<String> vehicleIds = ((positions*.assetId as Set) as List).subList(0, 2)
 
         when:
-        List<LivePosition> response = connect.tracking().live(new LivePositionRequest()
-                .withVehicleIds(vehicleIds))
+        List<LivePosition> response = connect.tracking().live()
+                .withVehicleIds(vehicleIds)
+                .fetch()
 
         then:
         response.size() == 2
@@ -41,8 +42,9 @@ class LivePositionIntegrationSpec extends BaseIntegrationSpec {
         List<String> driverIds = ((positions*.driverId as Set) as List).subList(0, 2)
 
         when:
-        List<LivePosition> response = connect.tracking().live(new LivePositionRequest()
-                .withDriverIds(driverIds))
+        List<LivePosition> response = connect.tracking().live()
+                .withDriverIds(driverIds)
+                .fetch()
 
         then:
         response.size() == 2
@@ -57,8 +59,9 @@ class LivePositionIntegrationSpec extends BaseIntegrationSpec {
         List<String> groupIds = ((positions*.assetGroupId as Set) as List).subList(0, 2)
 
         when:
-        List<LivePosition> response = connect.tracking().live(new LivePositionRequest()
-                .withGroupIds(groupIds))
+        List<LivePosition> response = connect.tracking().live()
+                .withGroupIds(groupIds)
+                .fetch()
 
         then:
         response.size() > 2
@@ -68,6 +71,6 @@ class LivePositionIntegrationSpec extends BaseIntegrationSpec {
     }
 
     private List<LivePosition> getPositionList() {
-        positionList = positionList ?: connect.tracking().live();
+        positionList = positionList ?: connect.tracking().live().fetch()
     }
 }
